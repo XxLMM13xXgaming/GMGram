@@ -18,7 +18,7 @@ GMGramErrorTable = {
 
 hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
 	if !gmgramaddonused then
-		http.Post("http://devinerp.site.nfoservers.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
+		http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
 			print(body)
 			gmgramaddonused = true
 		end,function(error)
