@@ -16,6 +16,7 @@ GMGramErrorTable = {
 	{"Works lol", "Success! Your photo has been posted please verify your photo now!", true}
 }
 
+-- This is just so i can keep track of servers using basicly allows me to see how many people are using and like my addons!
 hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
 	if !gmgramaddonused then
 		http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
