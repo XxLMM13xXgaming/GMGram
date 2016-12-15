@@ -4,8 +4,6 @@ util.AddNetworkString("GMGramOpenClientMenu")
 util.AddNetworkString("GMGramKillNotification")
 util.AddNetworkString("GMGramClientNotify")
 
-gmgramaddonused = false
-
 GMGramErrorTable = {
 	{"ID WRONG/NOT FOUND SERVER", "Server not found/The ID is wrong. (please report this message to a server administrator)", false},
 	{"BANNED.", "You are banned from posting.", false},
@@ -16,17 +14,14 @@ GMGramErrorTable = {
 	{"Works lol", "Success! Your photo has been posted please verify your photo now!", true}
 }
 
-hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
-	if !gmgramaddonused then
-		http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
-			print(body)
-			gmgramaddonused = true
-		end,function(error)
-			print(error)
-		end)
-	end
+timer.Simple(300, function()
+	http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
+		print(body)
+		gmgramaddonused = true
+	end,function(error)
+		print(error)
+	end)
 end)
-
 
 function net.ReceiveGMGramChunk(id, func) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
 	local chunks = chunks or {}
@@ -88,7 +83,7 @@ net.ReceiveGMGramChunk("GMGramClientTookPicture",function(data, ply)
       ply.GMGramPlayerOnCooldown = false
     end)
 
-		msgfound = false
+		local msgfound = false
 		for k, v in pairs(GMGramErrorTable) do
 			if body == v[1] then
 				msgfound = true
