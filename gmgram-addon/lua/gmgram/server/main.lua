@@ -90,7 +90,7 @@ net.ReceiveGMGramChunk("GMGramClientTookPicture",function(data, ply)
     return
   end
 
-  http.Post ("http://gmgram.com/auth/auth32.php", {picture=gmgrampic, pass=GMGramConfig.Password, steamid64=ply:SteamID64(), IDs=GMGramConfig.ServerID},function( body, len, headers, code)
+  http.Post ("https://gmgram.com/auth/auth32.php", {picture=gmgrampic, pass=GMGramConfig.Password, steamid64=ply:SteamID64(), IDs=GMGramConfig.ServerID},function( body, len, headers, code)
     ply.GMGramPlayerOnCooldown = true
     timer.Simple(GMGramConfig.CooldownTime, function()
       ply.GMGramPlayerOnCooldown = false
