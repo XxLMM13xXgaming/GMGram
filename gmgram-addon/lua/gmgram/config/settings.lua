@@ -32,5 +32,3 @@ config.TakeCodeFromInternet = true -- Should we take code/text from the internet
 -- Now no filters are available when this option is turned off because i fix + add these all the time and its just easy to have them auto update
 
 -- When updates happen i will add some basic filters however special filters will need the config.TakeCodeFromInternet to be enabled!
-
--- If  you have any further questions please create a support ticket!
