@@ -1,5 +1,3 @@
-Thank you very, very much for purchasing GMGram! - It means a alot :))
-
 Setup:
 1. Drag and place GMGram (The folder) into your server addons.
 2. Goto http://gmgram.com/server and add your server. (If your server takes longer than 4 hours, open a ticket).
