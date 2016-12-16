@@ -12,8 +12,6 @@ Aditional:
 
 If you have any issues, please feel free to open a ticket.
 
-Thank you so much for purchasing :)
-
 Web by Segeco <3
 Lua by LMM <3
 
