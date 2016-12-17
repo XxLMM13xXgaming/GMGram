@@ -1,13 +1,23 @@
 SENDING_DATA = false
 
-function net.SendGMGramChunk(id, data, max, rate) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
-	max = max or 16384
+function net.SendGMGramChunk(id, data, ply, callback, max, rate) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
+	max = max or (2^16-2^10)-1
 	rate = rate or 1/4
 
 	assert(not SENDING_DATA)
 	SENDING_DATA = true
 
 	local chunk_count = math.ceil(string.len(data) / max)
+
+	net.Start(id)
+	net.WriteInt(chunk_count, 32)
+	if ply and SERVER then
+		net.Send(ply)
+	elseif SERVER then
+		net.Broadcast()
+	elseif CLIENT then
+		net.SendToServer()
+	end
 
 	for i = 1, chunk_count do
 		local delay = rate * ( i - 1 )
@@ -28,6 +38,10 @@ function net.SendGMGramChunk(id, data, max, rate) -- Thanks to Author. (STEAM_0:
 				net.SendToServer()
 			end
 
+			if callback then
+				callback(chunk_count, i)
+			end
+
 			if i == chunk_count then
 				SENDING_DATA = false
 			end
@@ -35,12 +49,26 @@ function net.SendGMGramChunk(id, data, max, rate) -- Thanks to Author. (STEAM_0:
 	end
 end
 
-function net.ReceiveGMGramChunk(id, func) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
+function net.ReceiveGMGramChunk(id, func, callback) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
 	local chunks = chunks or {}
+	local counted = false
+	local count
 
 	net.Receive(id, function(len, server)
+		if not counted then
+			count = net.ReadInt(32)
+			if count then
+				counted = true
+				return
+			end
+		end
+
 		local chunk = net.ReadData(( len - 1 ) / 8)
 		local last_chunk = net.ReadBit() == 1
+
+		if callback then
+			callback(count, #chunks+1)
+		end
 
 		table.insert(chunks, chunk)
 
@@ -48,7 +76,9 @@ function net.ReceiveGMGramChunk(id, func) -- Thanks to Author. (STEAM_0:0:580681
 			local data = table.concat(chunks)
 			func(data, server)
 
-			chunks = nil
+			chunks = {}
+			counted = false
+			count = nil
 		end
 	end)
 end
