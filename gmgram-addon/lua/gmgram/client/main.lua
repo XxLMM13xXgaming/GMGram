@@ -15,7 +15,10 @@ function net.SendGMGramChunk(id, data, max, rate) -- Thanks to Author. (STEAM_0:
 		timer.Simple(delay, function()
 			local chunk = string.sub(data, ( i - 1 ) * max + 1, i * max)
 			local chunk_len = string.len(chunk)
-
+			
+			if id == nil then return end
+				
+				
 			net.Start(id)
 			net.WriteData(chunk, chunk_len)
 			net.WriteBit(i == chunk_count)
