@@ -4,6 +4,8 @@ util.AddNetworkString("GMGramOpenClientMenu")
 util.AddNetworkString("GMGramKillNotification")
 util.AddNetworkString("GMGramClientNotify")
 
+local GMGramVersion = "1.1.0"
+
 GMGramErrorTable = {
 	{"ID WRONG/NOT FOUND SERVER", "Server not found/The ID is wrong. (please report this message to a server administrator)", false},
 	{"BANNED.", "You are banned from posting.", false},
@@ -14,44 +16,57 @@ GMGramErrorTable = {
 	{"Works lol", "Success! Your photo has been posted please verify your photo now!", true}
 }
 
-<<<<<<< HEAD
-timer.Simple(300, function()
-	http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
-		print(body)
-		gmgramaddonused = true
-	end,function(error)
-		print(error)
-	end)
-=======
--- This is just so i can keep track of servers using basicly allows me to see how many people are using and like my addons!
-hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
-	if !gmgramaddonused then
-		http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = "76561198141863800"},function(body)
-			print(body)
-			gmgramaddonused = true
+hook.Add( "InitPostEntity", "GMGramInitPostEntity", function()
+	timer.Simple(10, function()
+		MsgC(Color(255,0,0), "[", Color(255,255,255), "GMGram", Color(255,0,0), "] ", Color(0,255,0), "GMGram stat running\n")
+		http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = "nil"},function(body)
+			MsgC(Color(255,0,0), "[", Color(255,255,255), "GMGram", Color(255,0,0), "] ", Color(0,255,0), body.."\n")
 		end,function(error)
 			print(error)
 		end)
-	end
->>>>>>> origin/master
+		MsgC(Color(255,0,0), "[", Color(255,255,255), "GMGram", Color(255,0,0), "] ", Color(0,255,0), "GMGram checking version...\n")
+		http.Fetch("https://raw.githubusercontent.com/XxLMM13xXgaming/gmgram/master/version.txt", function(body, len, headers, code, ply)
+			if (string.Trim(body) ~= GMGramVersion) then
+				MsgC(Color(255,0,0), "[", Color(255,255,255), "GMGram", Color(255,0,0), "] ", Color(0,255,0), "You are using an outdated version! Please update here: https://github.com/XxLMM13xXgaming/gmgram\n")
+			else
+				MsgC(Color(255,0,0), "[", Color(255,255,255), "GMGram", Color(255,0,0), "] ", Color(0,255,0), "You are using the updated version!\n")
+			end
+		end,function()
+			-- SHhh
+		end)
+	end)
 end)
 
-function net.ReceiveGMGramChunk(id, func) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
+function net.ReceiveGMGramChunk(id, func, callback) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
 	local chunks = chunks or {}
+	local counted = false
+	local count
 
 	net.Receive(id, function(len, server)
+		if not counted then
+			count = net.ReadInt(32)
+			if count then
+				counted = true
+				return
+			end
+		end
+
 		local chunk = net.ReadData(( len - 1 ) / 8)
 		local last_chunk = net.ReadBit() == 1
-        if chunks == nil then
-            chunks = {}
-        end
+
+		if callback then
+			callback(count, #chunks+1)
+		end
+
 		table.insert(chunks, chunk)
 
 		if last_chunk then
 			local data = table.concat(chunks)
 			func(data, server)
 
-			chunks = nil
+			chunks = {}
+			counted = false
+			count = nil
 		end
 	end)
 end
@@ -90,7 +105,7 @@ net.ReceiveGMGramChunk("GMGramClientTookPicture",function(data, ply)
     return
   end
 
-  http.Post ("http://gmgram.com/auth/auth32.php", {picture=gmgrampic, pass=GMGramConfig.Password, steamid64=ply:SteamID64(), IDs=GMGramConfig.ServerID},function( body, len, headers, code)
+  http.Post ("https://gmgram.com/auth/auth32.php", {picture=gmgrampic, pass=GMGramConfig.Password, steamid64=ply:SteamID64(), IDs=GMGramConfig.ServerID},function( body, len, headers, code)
     ply.GMGramPlayerOnCooldown = true
     timer.Simple(GMGramConfig.CooldownTime, function()
       ply.GMGramPlayerOnCooldown = false
