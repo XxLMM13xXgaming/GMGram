@@ -14,15 +14,14 @@ GMGramErrorTable = {
 	{"Works lol", "Success! Your photo has been posted please verify your photo now!", true}
 }
 
-<<<<<<< HEAD
 timer.Simple(300, function()
 	http.Post("http://xxlmm13xxgaming.com/addons/data/serveradd.php",{sid = "gmgram", sip = game.GetIPAddress(), sdate=tostring(os.time()), soid = 76561198141863800},function(body)
 		print(body)
 		gmgramaddonused = true
 	end,function(error)
 		print(error)
-	end)
-=======
+end)
+
 -- This is just so i can keep track of servers using basicly allows me to see how many people are using and like my addons!
 hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
 	if !gmgramaddonused then
@@ -33,7 +32,6 @@ hook.Add("PlayerInitialSpawn", "GMGramPlayerInitialSpawn", function()
 			print(error)
 		end)
 	end
->>>>>>> origin/master
 end)
 
 function net.ReceiveGMGramChunk(id, func) -- Thanks to Author. (STEAM_0:0:58068155) for these chunk functions :D
